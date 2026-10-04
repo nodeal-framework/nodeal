@@ -1,0 +1,6 @@
+name: NodealPlugin
+root: src
+
+sync:
+  - name: Plugin
+    target: game.Workspace.Nodeal

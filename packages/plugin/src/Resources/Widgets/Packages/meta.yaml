@@ -1,0 +1,12 @@
+ClassName: Folder
+Attributes:
+  Disabled: true
+  FloatingXSize: 0
+  FloatingYSize: 0
+  InitialDockState: Left
+  InitialEnabled: false
+  InitialEnabledShouldOverrideRestore: false
+  Loader: Packages
+  MinXSize: 0
+  MinYSize: 0
+  Order: 5

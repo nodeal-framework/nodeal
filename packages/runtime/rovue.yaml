@@ -1,0 +1,6 @@
+name: NodealRuntime
+root: src
+
+sync:
+  - name: Runtime
+    target: game.ReplicatedStorage.Global

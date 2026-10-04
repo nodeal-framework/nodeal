@@ -1,0 +1,10 @@
+ClassName: Frame
+Attributes:
+  namePath: Box
+  nameProperty: PlaceholderText
+  path: Box
+  placeholderPath: Box
+  placeholderProperty: PlaceholderText
+  property: Text
+  warningPath: UIStroke
+  warningProperty: Color

@@ -1,0 +1,8 @@
+ClassName: ImageButton
+Tags:
+  - Nodeal:Theme
+  - Button:Hover
+Attributes:
+  Focused: '0'
+  UnFocused: '1'
+  _BackgroundColor3: DialogButtonBorder

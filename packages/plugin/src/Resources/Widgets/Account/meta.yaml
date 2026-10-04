@@ -1,0 +1,12 @@
+ClassName: Folder
+Attributes:
+  Disabled: true
+  FloatingXSize: 0
+  FloatingYSize: 0
+  InitialDockState: Float
+  InitialEnabled: false
+  InitialEnabledShouldOverrideRestore: true
+  Loader: Account
+  MinXSize: 0
+  MinYSize: 0
+  Order: 2

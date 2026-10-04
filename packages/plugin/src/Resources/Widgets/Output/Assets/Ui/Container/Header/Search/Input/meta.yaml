@@ -1,0 +1,6 @@
+ClassName: TextBox
+Tags:
+  - Input:SearchBox
+Attributes:
+  HistorySize: 0, 337, 0, 0
+  Id: Output
