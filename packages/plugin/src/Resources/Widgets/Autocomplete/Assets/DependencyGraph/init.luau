@@ -113,9 +113,9 @@ end
 function DependencyGraph:ResolveExecutionOrder(roots: {Instance}?): ({ ModuleScript }, string?)
 	local order = {}
 	local queue = {}
-	
+
 	local includedNodes = {}
-	
+
 	for module, node in self.nodes do
 		local isNodeal = false
 		if module.Parent and not module:GetAttribute("ContentExcluded") then
@@ -152,16 +152,37 @@ function DependencyGraph:ResolveExecutionOrder(roots: {Instance}?): ({ ModuleScr
 			table.insert(queue, module)
 		end
 	end
-	
+
 	table.sort(queue, function(a, b) return a.Name < b.Name end)
 
 	local head = 1
 	local processedCount = 0
+	local queued = {}
+	for _, module in queue do queued[module] = true end
 
-	while head <= #queue do
+	local totalNodes = 0
+	for _, _ in includedNodes do totalNodes += 1 end
+
+	local hadCycle = false
+
+	while processedCount < totalNodes do
+		if head > #queue then
+			-- Stalled on a cycle: release one blocked module only, so modules that merely depend
+			-- on the cycle still load after all of it (appending every leftover in hash order
+			-- could load a dependent before its provider).
+			hadCycle = true
+
+			local pick = self:PickCycleBreaker(includedNodes, inDegrees, queued)
+
+			if not pick then break end
+
+			queued[pick] = true
+			table.insert(queue, pick)
+		end
+
 		local current = queue[head]
 		head += 1
-		
+
 		table.insert(order, current)
 		processedCount += 1
 
@@ -174,43 +195,102 @@ function DependencyGraph:ResolveExecutionOrder(roots: {Instance}?): ({ ModuleScr
 		for dependent, _ in node.dependents do
 			if includedNodes[dependent] then
 				inDegrees[dependent] -= 1
-				if inDegrees[dependent] == 0 then
+				if inDegrees[dependent] == 0 and not queued[dependent] then
 					table.insert(newReady, dependent)
 				end
 			end
 		end
-		
+
 		if #newReady > 0 then
 			table.sort(newReady, function(a, b) return a.Name < b.Name end)
 			for _, dep in newReady do
+				queued[dep] = true
 				table.insert(queue, dep)
 			end
 		end
 	end
 
-	-- Check for cycles
-	local totalNodes = 0
-	for _, _ in includedNodes do totalNodes += 1 end
-
-	if processedCount ~= totalNodes then
-		-- There is a cycle. Let's find it using DFS.
+	if hadCycle then
 		local cyclePath, isUnresolvable = self:FindCycleTrace(includedNodes)
-
-		-- Fallback: append remaining nodes so the plugin doesn't crash
-		for module, _ in includedNodes do
-			if inDegrees[module] and inDegrees[module] > 0 then
-				table.insert(order, module)
-			end
-		end
 
 		if isUnresolvable then
 			warn("[Nodeal] Critical Warning: Unresolvable circular dependency detected. This will likely crash at runtime.\nTrace: " .. (cyclePath or "unknown"))
 		end
-
-		return order, nil
 	end
 
 	return order, nil
+end
+
+-- Picks the module to release when Kahn stalls: it must sit in a cycle whose remaining providers
+-- are all inside that same cycle, otherwise a module could load before a provider it waits on.
+function DependencyGraph:PickCycleBreaker(includedNodes: { [ModuleScript]: any }, inDegrees: { [ModuleScript]: number }, queued: { [ModuleScript]: boolean }): ModuleScript?
+	local index, lowLink, onStack, stack = {}, {}, {}, {}
+	local componentOf = {}
+	local components = {}
+	local counter = 0
+
+	-- Tarjan over the modules still blocked (edges go dependent -> provider)
+	local function strongConnect(module: ModuleScript)
+		counter += 1
+		index[module] = counter
+		lowLink[module] = counter
+		table.insert(stack, module)
+		onStack[module] = true
+
+		for provider, _ in self.nodes[module].dependencies do
+			if includedNodes[provider] and not queued[provider] then
+				if not index[provider] then
+					strongConnect(provider)
+					lowLink[module] = math.min(lowLink[module], lowLink[provider])
+				elseif onStack[provider] then
+					lowLink[module] = math.min(lowLink[module], index[provider])
+				end
+			end
+		end
+
+		if lowLink[module] == index[module] then
+			local component = {}
+			repeat
+				local member = table.remove(stack)
+				onStack[member] = nil
+				componentOf[member] = component
+				table.insert(component, member)
+			until member == module
+			table.insert(components, component)
+		end
+	end
+
+	for module, _ in includedNodes do
+		if not queued[module] and not index[module] then
+			strongConnect(module)
+		end
+	end
+
+	local pick = nil
+
+	for _, component in components do
+		local isSource = true
+
+		for _, member in component do
+			for provider, _ in self.nodes[member].dependencies do
+				if includedNodes[provider] and not queued[provider] and componentOf[provider] ~= component then
+					isSource = false
+					break
+				end
+			end
+			if not isSource then break end
+		end
+
+		if isSource then
+			for _, member in component do
+				if not pick or inDegrees[member] < inDegrees[pick] or (inDegrees[member] == inDegrees[pick] and member.Name < pick.Name) then
+					pick = member
+				end
+			end
+		end
+	end
+
+	return pick
 end
 
 function DependencyGraph:FindCycleTrace(includedNodes: { [ModuleScript]: any }): (string?, boolean?)
