@@ -1,1 +1,14 @@
 ClassName: TextLabel
+Properties:
+  BackgroundTransparency: 1
+  Font: GothamBold
+  FontFace: rbxasset://fonts/families/GothamSSm.json, Bold, Normal
+  LayoutOrder: 1
+  Size: 1, 0, 0, 16
+  Text: Nodeal Framework
+  TextColor: Pearl
+  TextColor3: '#E7E7EC'
+  TextSize: 14
+  TextTruncate: AtEnd
+  TextXAlignment: Left
+  ZIndex: 2

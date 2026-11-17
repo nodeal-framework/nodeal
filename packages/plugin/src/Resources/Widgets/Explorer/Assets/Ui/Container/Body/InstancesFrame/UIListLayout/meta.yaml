@@ -1,1 +1,4 @@
 ClassName: UIListLayout
+Properties:
+  Padding: 0, 3
+  SortOrder: LayoutOrder

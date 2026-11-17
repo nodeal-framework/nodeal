@@ -1,1 +1,6 @@
 ClassName: ScreenGui
+Properties:
+  IgnoreGuiInset: true
+  ResetOnSpawn: false
+  ScreenInsets: DeviceSafeInsets
+  ZIndexBehavior: Sibling

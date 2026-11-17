@@ -1,1 +1,3 @@
 ClassName: UISizeConstraint
+Properties:
+  MaxSize: inf, 48

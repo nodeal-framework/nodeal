@@ -155,7 +155,7 @@ local function matchParameters(injectedParams: { any }, userParams: { any }): ({
 		else
 			local isLeadingOptional = currentInjected.optional and (
 				(firstMandatoryIdx and injectedIdx < firstMandatoryIdx) or
-				hasVariadic
+					hasVariadic
 			)
 
 			if isLeadingOptional then

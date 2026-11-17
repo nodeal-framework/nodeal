@@ -1,1 +1,16 @@
 ClassName: ImageLabel
+Properties:
+  AnchorPoint: 0.5, 0.5
+  BackgroundColor3: '#FFFFFF'
+  BackgroundTransparency: 1
+  BorderColor3: '#000000'
+  BorderSizePixel: 0
+  Image: rbxassetid://8539638324
+  ImageColor3: '#A6A6A6'
+  ImageContent: rbxassetid://8539638324
+  Position: 0.5, 0, 0.5, 0
+  Rotation: 90
+  Selectable: true
+  Size: 0.5, 0, 0.5, 0
+  Visible: false
+  ZIndex: 2

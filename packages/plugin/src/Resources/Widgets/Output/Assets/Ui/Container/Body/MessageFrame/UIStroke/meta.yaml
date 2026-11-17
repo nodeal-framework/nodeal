@@ -1,3 +1,6 @@
 ClassName: UIStroke
+Properties:
+  Color: '#3C3C3C'
+  Enabled: false
 Attributes:
   _Color: DialogButtonBorder

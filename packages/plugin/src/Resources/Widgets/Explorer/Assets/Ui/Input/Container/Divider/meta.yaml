@@ -1,5 +1,12 @@
 ClassName: Frame
 Tags:
   - Nodeal:Theme
+Properties:
+  BackgroundColor3: '#353741'
+  BorderColor3: '#000000'
+  BorderSizePixel: 0
+  LayoutOrder: 1
+  Size: 0.8999999761581421, 0, 0, 1
+  ZIndex: 12
 Attributes:
   _BackgroundColor3: DialogButtonBorder

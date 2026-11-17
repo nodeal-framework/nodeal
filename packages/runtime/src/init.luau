@@ -17,7 +17,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local CollectionService = game:GetService("CollectionService")
 
 --// Contants //--
-local native_env = getfenv()
+local native_env: { [any]: any } = nil :: any
+local loader_source = debug.info(1, "s")
 
 local client, server, studio = RunService:IsClient(), RunService:IsServer(), RunService:IsStudio()
 
@@ -42,8 +43,8 @@ local execution_queue = {}
 
 local service_registry = {}
 
+-- No universe.universe: a table holding itself under that name is how memory scanners found the env.
 local universe = {}
-universe.universe = universe
 local decorators = {}
 
 --// Private //--
@@ -171,6 +172,32 @@ end
 --// Proxy //--
 local Proxy = {}
 
+local function index_object(object: any, index: any): any
+	return object[index]
+end
+
+local function assign_object(object: any, index: any, value: any): ()
+	object[index] = value
+end
+
+-- One wrapper per method, kept and checked against the current method and owner.
+local function method_wrapper(wrappers: dict, index: any, value: any, owner: any, self: any): any
+	local wrapper = wrappers[index]
+
+	if not wrapper or wrapper[1] ~= value or wrapper[2] ~= owner then
+		wrapper = { value, owner, function(passed_self, ...)
+			if passed_self == self then
+				return value(owner, ...)
+			end
+
+			return value(passed_self, ...)
+		end }
+		wrappers[index] = wrapper
+	end
+
+	return wrapper[3]
+end
+
 Proxy.__setmetatable = function(self: Proxy, new_meta): Proxy
 	rawset(self, "metatable", new_meta)
 	return self
@@ -205,19 +232,13 @@ Proxy.__index = function(self, index: any)
 		return extended[index]
 	end
 
-	local success, value = pcall(function()
-		return self.object[index]
-	end)
+	local object = rawget(self, "object")
+	local success, value = pcall(index_object, object, index)
 
 	if success then
-		if typeof(value) == "function" then
-			return function(...)
-				if select(1, ...) == self then
-					return value(self.object, select(2, ...))
-				end
-
-				return value(...)
-			end
+		if type(value) == "function" then
+			-- a fresh closure on every access was most of the cost
+			return method_wrapper(rawget(self, "wrappers"), index, value, object, self)
 		end
 
 		return value
@@ -233,9 +254,7 @@ Proxy.__newindex = function(self, index: any, value: any)
 		end
 	end
 
-	local success = pcall(function()
-		self.object[index] = value
-	end)
+	local success = pcall(assign_object, rawget(self, "object"), index, value)
 
 	if not success then
 		rawget(self, "extended")[index] = value
@@ -249,7 +268,8 @@ function Proxy.new(object: any?, force: boolean?): Proxy
 
 	local self = {
 		object = object,
-		extended = {}
+		extended = {},
+		wrappers = {}
 	}
 
 	return setmetatable(self, Proxy)
@@ -381,18 +401,34 @@ Node.__index = function(self, index: string): any?
 		return Node[index]
 	end
 
-	local success, value = pcall(function()
-		return self.Instance[index]
-	end)
+	-- rawget: a loaded client module has no Instance left, and self.Instance recursed back in here.
+	local instance = rawget(self, "Instance")
+	if instance then
+		local success, value = pcall(index_object, instance, index)
 
-	if success then
-		if typeof(value) == "function" then
-			return function(_, ...)
-				return value(self.Instance, ...)
+		if success then
+			if type(value) == "function" then
+				-- kept per node: script:GetAttribute() built a closure on every call
+				local wrappers = rawget(self, "_wrappers")
+				if not wrappers then
+					wrappers = {}
+					rawset(self, "_wrappers", wrappers)
+				end
+
+				-- engine methods are shared by every instance: the instance is part of the key
+				local wrapper = wrappers[index]
+				if not wrapper or wrapper[1] ~= value or wrapper[2] ~= instance then
+					wrapper = { value, instance, function(_, ...)
+						return value(instance, ...)
+					end }
+					wrappers[index] = wrapper
+				end
+
+				return wrapper[3]
 			end
-		end
 
-		return value
+			return value
+		end
 	end
 
 	return self:FindFirstChild(index)
@@ -401,9 +437,7 @@ end
 Node.__newindex = function(self: Node, key: any, value: any)
 	if rawget(self, "Locked") then return end --// KINDA USELESS BUT WHATEVER
 
-	local success = pcall(function()
-		self.Instance[key] = value
-	end)
+	local success = pcall(assign_object, rawget(self, "Instance"), key, value)
 
 	if not success then
 		rawset(self, key, value)
@@ -433,14 +467,11 @@ function Node.new(ancestor: Node | Instance, instance: Instance?, childen: { Nod
 
 	self.Name = instance.Name
 
-	if optimize_production then
-		self.FullName = ""
+	-- Kept in production too: script:GetFullName() returned "" in a published game.
+	if type(ancestor) == "table" and ancestor.FullName then
+		self.FullName = ancestor.FullName .. "." .. instance.Name
 	else
-		if type(ancestor) == "table" and ancestor.FullName then
-			self.FullName = ancestor.FullName .. "." .. instance.Name
-		else
-			self.FullName = instance:GetFullName()
-		end
+		self.FullName = instance:GetFullName()
 	end
 
 	self.Attributes = instance:GetAttributes()
@@ -673,13 +704,13 @@ universe.game.GetService = function(_, name: string): any
 		return service_registry[name]
 	end
 
-	local success, native_service = pcall(function()
-		return game:GetService(name)
-	end)
+	local success, native_service = pcall(game.GetService, game, name)
 
 	if success and native_service then
 		return native_service
 	end
+
+	local wrappers = {}
 
 	return setmetatable({}, {
 		__tostring = function(): string
@@ -701,13 +732,7 @@ universe.game.GetService = function(_, name: string): any
 			local value = custom_service[key]
 
 			if type(value) == "function" then
-				return function(passed_self, ...)
-					if passed_self == self then
-						return value(custom_service, ...)
-					end
-
-					return value(passed_self, ...)
-				end
+				return method_wrapper(wrappers, key, value, custom_service, self)
 			end
 
 			return value
@@ -731,9 +756,7 @@ universe.game.HasService = function(_, name: string): boolean
 		return true
 	end
 
-	local success, native_service = pcall(function()
-		return game:GetService(name)
-	end)
+	local success, native_service = pcall(game.GetService, game, name)
 
 	if success and native_service then
 		return true
@@ -747,6 +770,8 @@ universe.game.GetModule = function(_, name: string): dict?
 	if node and node.Content then
 		return node.Content
 	end
+
+	local wrappers = {}
 
 	return setmetatable({}, {
 		__tostring = function(): string
@@ -765,16 +790,11 @@ universe.game.GetModule = function(_, name: string): dict?
 				return nil
 			end
 
-			local value = node.Content[key]
+			local content = node.Content
+			local value = content[key]
 
 			if type(value) == "function" then
-				return function(passed_self, ...)
-					if passed_self == self then
-						return value(node.Content, ...)
-					end
-
-					return value(passed_self, ...)
-				end
+				return method_wrapper(wrappers, key, value, content, self)
 			end
 
 			return value
@@ -876,11 +896,12 @@ local function _get_trace(level: number): string
 		return ""
 	end
 
-	local source, line = debug.info(level, "sl")
+	local source, line, scope = debug.info(level, "slf")
 	if not source then return "" end
 
-	local success, env = pcall(getfenv, level)
-	if success and type(env) == "table" and type(env.script) == "table" and type(env.script.GetFullName) == "function" then
+	-- The function, not a level: pcall(getfenv, level) read one frame too high, i.e. this loader.
+	local env = source ~= loader_source and source ~= "[C]" and getfenv(scope)
+	if type(env) == "table" and type(env.script) == "table" and type(env.script.GetFullName) == "function" then
 		source = env.script:GetFullName()
 	elseif type(source) == "string" and string.sub(source, 1, 1) == "=" then
 		source = string.sub(source, 2)
@@ -913,7 +934,8 @@ end
 
 universe.error = function(message: string?, level: number?): ()
 	if not studio and manifest.PrivateError then
-		coroutine.yield()
+		-- Raised without its message: yielding here hung every pcall and assert of a published game.
+		error("", 0)
 	end
 
 	error(message, level == 0 and 0 or (level and level + 1 or 2))
@@ -928,7 +950,8 @@ universe.assert = function<T>(value: T?, message: string?, level: number?): T?
 end
 
 --// Universe -> Debug //--
-universe.debug = Proxy.new(debug)
+-- A copy, not a Proxy: debug.profilebegin sits in hot code.
+universe.debug = table.clone(debug)
 
 universe.debug.print = print
 universe.debug.warn = warn
@@ -1165,14 +1188,13 @@ end
 --// Requiring //--
 local function _load_registry(): ()
 	for index, node: Node in execution_queue do
-		local success = true
-
-		if optimize_production then
-			require(node.Instance)
-		else
+		-- Only a detached client copy needs its path as a name; on the server it doubled every path.
+		if client and not optimize_production then
 			node.Instance.Name = node:GetFullName()
-			success = pcall(require, node.Instance)
 		end
+
+		-- Protected in every build, so a published game stops the way Studio does.
+		local success = pcall(require, node.Instance)
 
 		if client then
 			node.Instance.Name = ""
@@ -1203,14 +1225,11 @@ local function _execute_targets(node: Node, content: any, targets: { [any]: any 
 		local func = content[name]
 
 		if type(func) == "function" then
-			if optimize_production then
-				func()
-			else
-				local success, result = xpcall(func, debug.traceback, content)
+			-- Same call in every build: production dropped `self`, which broke `function X:Init()`.
+			local success, result = xpcall(func, debug.traceback, content)
 
-				if not success then
-					universe.error(`Error during '{node:GetFullName()}' ({name}) {phase}:\n{result}`, 0)
-				end
+			if not success then
+				universe.error(`Error during '{node:GetFullName()}' ({name}) {phase}:\n{result}`, 0)
 			end
 		end
 	end
@@ -1370,20 +1389,35 @@ local function _init_registry(): ()
 end
 
 --// Hook //--
--- Could be optimised in the future, but it's working fine. If you got any idea submit it in the github <3
-local function _inject(scope: (...any?) -> (...any?), env: { [any]: any }): ()
-	local proxy = {}
+-- Tables all the way down: a global read in a module no longer calls a Lua function.
+local module_env = table.freeze({ __index = universe, __metatable = true })
 
+-- Copied in so the commonest reads stop one table short; a builtin registered later still wins.
+local common_globals = {
+	"math", "table", "string", "task", "os", "coroutine", "utf8", "bit32", "buffer", "type", "select", "pairs",
+	"ipairs", "next", "tostring", "tonumber", "pcall", "xpcall", "rawget", "rawset", "rawequal", "rawlen", "unpack",
+	"tick", "time", "workspace", "Instance", "Enum", "Vector3", "Vector2", "CFrame", "Color3", "UDim", "UDim2",
+	"TweenInfo", "Random", "NumberRange", "NumberSequence", "ColorSequence", "BrickColor", "RaycastParams",
+	"OverlapParams", "DateTime"
+}
+
+local function _adopt_env(env: { [any]: any }): ()
+	native_env = env
+
+	for _, name in common_globals do
+		if rawget(universe, name) == nil then
+			universe[name] = env[name]
+		end
+	end
+
+	-- Not locked with __metatable: table.freeze refuses such a table, and _seal freezes universe.
+	setmetatable(universe, table.freeze({ __index = env }))
+end
+
+local function _inject(scope: (...any?) -> (...any?), env: { [any]: any }): ()
 	env.script = instance_registry[env.script]
 
-	setmetatable(proxy, {
-		__index = function(_, key: any)
-			return universe[key] or env[key]
-		end,
-		__metatable = true
-	})
-
-	setfenv(scope, proxy)
+	setfenv(scope, setmetatable({ script = env.script }, module_env))
 end
 
 local function _hook_load(): ()
@@ -1393,6 +1427,10 @@ local function _hook_load(): ()
 		__call = function(): (any?) -> (nil)
 			local scope = debug.info(2, "f")
 			local env = getfenv(scope)
+
+			if not native_env then
+				_adopt_env(env)
+			end
 
 			local source = env.script
 			_scan(not source or not instance_registry[source])
@@ -1416,7 +1454,70 @@ end
 
 local function _hook_unload(): ()
 	_hook_unload = nil
-	setmetatable(_G, nil)
+
+	-- Every real module shook hands during the boot: one doing it now is injected code.
+	setmetatable(_G, table.freeze({
+		__call = function()
+			_scan(true, "handshake after boot")
+			error("attempt to call a table value", 2)
+		end,
+	}))
+end
+
+-- Booted, the env is final: changing it now takes an executor's setreadonly or an in-place hook, which the client looks for.
+local function _seal(): ()
+	local sealed = { universe, rawget(universe.game, "extended"), service_registry, name_registry, instance_registry, decorators, Proxy, Node, module_env }
+
+	for _, tbl in sealed do
+		if not table.isfrozen(tbl) then
+			table.freeze(tbl)
+		end
+	end
+
+	-- The server runs no foreign code.
+	if not client then return end
+
+	local is_frozen, info = table.isfrozen, debug.info
+	local trap, meta = getmetatable(_G), getmetatable(universe)
+	local sources = {}
+
+	local function track(tbl: { [any]: any }): ()
+		for _, value in next, tbl do
+			if type(value) == "function" then
+				sources[value] = info(value, "s")
+			end
+		end
+	end
+
+	for _, tbl in sealed do
+		track(tbl)
+	end
+
+	for _, service in service_registry do
+		if type(service) == "table" then
+			track(service)
+		end
+	end
+
+	-- A hook swaps a function's body in place: its source stops being the one it was born with.
+	task.spawn(function()
+		while task.wait(5) do
+			local intact = rawequal(getmetatable(_G), trap) and rawequal(getmetatable(universe), meta)
+
+			for _, tbl in sealed do
+				intact = intact and is_frozen(tbl)
+			end
+
+			for fn, source in sources do
+				intact = intact and info(fn, "s") == source
+			end
+
+			if not intact then
+				_scan(true, "environment tampered")
+				return
+			end
+		end
+	end)
 end
 
 --// Public //--
@@ -1437,6 +1538,7 @@ return function(): ()
 	_hook_unload()
 
 	_init_registry()
+	_seal()
 
 	ReplicatedStorage:SetAttribute("Loaded"..Context, true)
 	ReplicatedStorage:GetAttributeChangedSignal("Loaded"..Context):Connect(function() _scan() end)

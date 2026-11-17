@@ -1,5 +1,18 @@
 ClassName: ImageLabel
 Tags:
   - Nodeal:Theme
+Properties:
+  AnchorPoint: 0.5, 0.5
+  BackgroundColor3: '#FFFFFF'
+  BackgroundTransparency: 1
+  BorderColor3: '#000000'
+  BorderSizePixel: 0
+  Image: rbxassetid://7072706620
+  ImageColor3: '#E6E7EA'
+  ImageContent: rbxassetid://7072706620
+  Position: 0.5, 0, 0.5, 0
+  Size: 1.100000023841858, 0, 1.100000023841858, 0
+  Visible: false
+  ZIndex: 20
 Attributes:
   _ImageColor3: BrightText

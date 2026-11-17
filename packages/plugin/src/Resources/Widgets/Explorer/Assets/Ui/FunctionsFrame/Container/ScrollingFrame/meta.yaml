@@ -1,1 +1,22 @@
 ClassName: ScrollingFrame
+Properties:
+  Active: true
+  AutomaticCanvasSize: Y
+  AutomaticSize: Y
+  BackgroundColor3: '#FFFFFF'
+  BackgroundTransparency: 1
+  BorderColor3: '#000000'
+  BorderSizePixel: 0
+  BottomImage: rbxassetid://132267630948859
+  BottomImageContent: rbxassetid://132267630948859
+  CanvasSize: 0, 0, 0, 0
+  MidImage: rbxassetid://15747605162
+  MidImageContent: rbxassetid://15747605162
+  ScrollBarImageColor3: '#383838'
+  ScrollBarImageTransparency: 0.699999988079071
+  ScrollBarThickness: 8
+  ScrollingDirection: Y
+  Size: 1, 0, 0, 0
+  TopImage: rbxassetid://75671441225451
+  TopImageContent: rbxassetid://75671441225451
+  ZIndex: 11

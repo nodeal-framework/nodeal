@@ -1,1 +1,5 @@
 ClassName: UIStroke
+Properties:
+  ApplyStrokeMode: Border
+  Color: '#CCCCCC'
+  Thickness: 0.6000000238418579

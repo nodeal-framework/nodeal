@@ -1,1 +1,8 @@
 ClassName: UIPageLayout
+Properties:
+  EasingStyle: Quad
+  GamepadInputEnabled: false
+  ScrollWheelInputEnabled: false
+  SortOrder: LayoutOrder
+  TouchInputEnabled: false
+  TweenTime: 0.10000000149011612

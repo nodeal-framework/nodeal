@@ -1,1 +1,4 @@
 ClassName: ScreenGui
+Properties:
+  IgnoreGuiInset: true
+  ScreenInsets: DeviceSafeInsets

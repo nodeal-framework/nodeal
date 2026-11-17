@@ -1,1 +1,7 @@
 ClassName: Frame
+Properties:
+  BackgroundTransparency: 1
+  ClipsDescendants: true
+  LayoutOrder: 2
+  Size: 1, 0, 0, 22
+  ZIndex: 2

@@ -1,4 +1,11 @@
 ClassName: Frame
+Properties:
+  BackgroundColor3: '#292929'
+  BorderColor3: '#000000'
+  BorderSizePixel: 0
+  LayoutOrder: 2
+  Size: 0.8999999761581421, 0, 0, 20
+  ZIndex: 12
 Attributes:
   namePath: Box
   nameProperty: PlaceholderText

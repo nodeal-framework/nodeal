@@ -1,1 +1,13 @@
 ClassName: ImageButton
+Properties:
+  Active: false
+  BackgroundColor3: '#FFFFFF'
+  BackgroundTransparency: 1
+  BorderColor3: '#000000'
+  BorderSizePixel: 0
+  ImageTransparency: 1
+  Interactable: false
+  LayoutOrder: -1
+  Size: 0.800000011920929, 0, 0.800000011920929, 0
+  Visible: false
+  ZIndex: 2

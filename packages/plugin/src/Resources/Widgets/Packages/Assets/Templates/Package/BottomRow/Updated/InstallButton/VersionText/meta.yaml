@@ -1,1 +1,12 @@
 ClassName: TextLabel
+Properties:
+  AutomaticSize: X
+  BackgroundTransparency: 1
+  Font: GothamBold
+  FontFace: rbxasset://fonts/families/GothamSSm.json, Bold, Normal
+  Size: 0, 0, 1, 0
+  Text: Install Package
+  TextColor: Tr. Flu. Blue
+  TextColor3: '#CFE2F7'
+  TextSize: 13
+  ZIndex: 2

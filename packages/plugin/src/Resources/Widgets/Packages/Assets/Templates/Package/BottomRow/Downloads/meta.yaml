@@ -1,1 +1,7 @@
 ClassName: Frame
+Properties:
+  AutomaticSize: X
+  BackgroundTransparency: 1
+  LayoutOrder: 1
+  Size: 0, 0, 0, 18
+  ZIndex: 2

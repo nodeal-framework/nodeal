@@ -1,1 +1,10 @@
 ClassName: ImageLabel
+Properties:
+  AnchorPoint: 0.5, 0.5
+  BackgroundTransparency: 1
+  Image: rbxassetid://7072719866
+  ImageContent: rbxassetid://7072719866
+  LayoutOrder: 1
+  Position: 0.5, 0, 0.5, 0
+  Size: 0.550000011920929, 0, 0.550000011920929, 0
+  ZIndex: 2

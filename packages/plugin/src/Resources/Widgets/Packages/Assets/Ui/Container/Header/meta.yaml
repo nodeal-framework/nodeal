@@ -1,1 +1,10 @@
 ClassName: Frame
+Properties:
+  Active: true
+  AutomaticSize: Y
+  BackgroundColor3: '#202227'
+  BorderSizePixel: 0
+  Position: 0, 0, 0, 36
+  Selectable: true
+  Size: 1, 0, 0, 0
+  ZIndex: 2

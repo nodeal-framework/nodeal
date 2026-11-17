@@ -14,73 +14,47 @@
 local Studio = settings():GetService("Studio")
 
 local CollectionService = game:GetService("CollectionService")
+local PluginGuiService = game:GetService("PluginGuiService")
 
 -- Constants --
-local plugin: plugin
-local class
-
--- Modules --
-
--- Variables --
-local currentTheme = Studio.Theme
+local themeTag = "Nodeal:Theme"
 
 -- Functions --
-local function getTagged(tag: string): { Instance? }
-	local instances = CollectionService:GetTagged(tag)
-
-	for _, instance in instances do
-		if instance:IsDescendantOf(game.PluginGuiService) then continue end
-
-		local index = table.find(instances, instance)
-		table.remove(instances, index)
-	end
-
-	return instances
-end
-
-local function cleanSplit(str: string): { string? }
+local function cleanSplit(str: string): { string }
 	local parts = string.split(str, ",")
-	
-	for i, v in ipairs(parts) do
-		parts[i] = string.gsub(v, "^%s*(.-)%s*$", "%1")
+
+	for i, v in parts do
+		parts[i] = string.match(v, "^%s*(.-)%s*$")
 	end
-	
+
 	return parts
 end
 
-function applyTheme(instance: GuiObject)
-	currentTheme = Studio.Theme
+-- An attribute named _Property holds "StudioStyleGuideColor, Modifier".
+local function applyTheme(instance: Instance)
+	local theme = Studio.Theme
 
-	local attributes = instance:GetAttributes()
-	for index: string, value: string in attributes do
-		if string.sub(index, 1, 1) ~= "_" then continue end
+	for index: string, value: any in instance:GetAttributes() do
+		if string.sub(index, 1, 1) ~= "_" or type(value) ~= "string" then continue end
 
-		local property = string.sub(index, 2)
-		local value = cleanSplit(value)
-		
-		local color = currentTheme:GetColor(Enum.StudioStyleGuideColor[value[1]], Enum.StudioStyleGuideModifier[value[2] or "Default"])
+		local parts = cleanSplit(value)
+		local color = theme:GetColor(Enum.StudioStyleGuideColor[parts[1]], Enum.StudioStyleGuideModifier[parts[2] or "Default"])
 
-		instance[property] = color
+		instance[string.sub(index, 2)] = color
 	end
 end
 
-function forceTheme()
-	local themeInstances = getTagged("Nodeal:Theme")
-	
-	for _, instance: GuiObject in themeInstances do
-		if not instance:IsA("GuiObject") then end
-		if not instance:FindFirstAncestorOfClass("DockWidgetPluginGui") then return end
-		
-		applyTheme(instance)
+local function forceTheme()
+	for _, instance in CollectionService:GetTagged(themeTag) do
+		if instance:IsDescendantOf(PluginGuiService) then
+			applyTheme(instance)
+		end
 	end
 end
 
-return function(self: any)
-	class = self
-	plugin = class.plugin
-	
-	CollectionService:GetInstanceAddedSignal("Nodeal:Theme"):Connect(applyTheme)
-	
+return function(_self: any)
+	CollectionService:GetInstanceAddedSignal(themeTag):Connect(applyTheme)
+
 	Studio.ThemeChanged:Connect(forceTheme)
 	forceTheme()
 end

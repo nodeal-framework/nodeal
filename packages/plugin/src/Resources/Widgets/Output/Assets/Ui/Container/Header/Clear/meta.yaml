@@ -1,7 +1,15 @@
 ClassName: ImageButton
 Tags:
-  - Nodeal:Theme
   - Button:Hover
+  - Nodeal:Theme
+Properties:
+  AutoButtonColor: false
+  BackgroundColor3: '#353741'
+  BorderColor3: '#000000'
+  BorderSizePixel: 0
+  ImageTransparency: 1
+  LayoutOrder: 52
+  Size: 1, 0, 1, 0
 Attributes:
   Focused: 0.35
   UnFocused: 0

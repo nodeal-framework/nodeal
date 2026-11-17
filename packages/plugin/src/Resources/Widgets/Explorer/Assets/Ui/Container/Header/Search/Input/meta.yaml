@@ -1,5 +1,23 @@
 ClassName: TextBox
 Tags:
   - Input:SearchBox
+Properties:
+  BackgroundColor3: '#FFFFFF'
+  BackgroundTransparency: 1
+  BorderColor3: '#000000'
+  BorderSizePixel: 0
+  ClearTextOnFocus: false
+  ClipsDescendants: true
+  Font: SourceSans
+  FontFace: rbxasset://fonts/families/SourceSansPro.json, Regular, Normal
+  PlaceholderColor3: '#AAAAAA'
+  PlaceholderText: Search
+  Size: 1, 0, 1, 0
+  Text: ''
+  TextColor: Light grey metallic
+  TextColor3: '#ABADAC'
+  TextSize: 16
+  TextXAlignment: Left
+  ZIndex: 5
 Attributes:
   Id: Explorer

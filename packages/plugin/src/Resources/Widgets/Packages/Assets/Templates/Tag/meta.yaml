@@ -1,1 +1,8 @@
 ClassName: Frame
+Properties:
+  AutomaticSize: X
+  BackgroundColor3: '#272A30'
+  BorderSizePixel: 0
+  LayoutOrder: 1
+  Size: 0, 0, 0, 20
+  ZIndex: 2

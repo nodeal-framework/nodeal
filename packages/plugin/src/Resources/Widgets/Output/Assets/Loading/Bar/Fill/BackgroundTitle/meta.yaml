@@ -1,5 +1,22 @@
 ClassName: TextLabel
 Tags:
   - Nodeal:Theme
+Properties:
+  AnchorPoint: 0.5, 0.5
+  AutomaticSize: X
+  BackgroundColor3: '#FFFFFF'
+  BackgroundTransparency: 1
+  BorderColor3: '#000000'
+  BorderSizePixel: 0
+  Font: SourceSansBold
+  FontFace: rbxasset://fonts/families/SourceSansPro.json, Bold, Normal
+  Interactable: false
+  Position: 0, 0, 0.5, 0
+  Size: 0, 0, 1, 0
+  Text: '...'
+  TextColor: Black metallic
+  TextColor3: '#161D32'
+  TextSize: 14
+  ZIndex: 2
 Attributes:
   _TextColor3: MainBackground

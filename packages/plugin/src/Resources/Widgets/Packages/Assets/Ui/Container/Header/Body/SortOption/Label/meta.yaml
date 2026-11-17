@@ -1,5 +1,19 @@
 ClassName: TextLabel
 Tags:
   - Nodeal:Theme
+Properties:
+  AutomaticSize: X
+  BackgroundColor3: '#FFFFFF'
+  BackgroundTransparency: 1
+  BorderColor3: '#000000'
+  BorderSizePixel: 0
+  Font: SourceSans
+  FontFace: rbxasset://fonts/families/SourceSansPro.json, Regular, Normal
+  Size: 0, 0, 1, 0
+  Text: Most Downloads
+  TextColor: Light grey
+  TextColor3: '#C7C1B7'
+  TextSize: 15
+  ZIndex: 3
 Attributes:
   _TextColor3: MainText

@@ -70,9 +70,6 @@ function DependencyGraph:AddDependency(dependent: ModuleScript, provider: Module
 end
 
 function DependencyGraph:FilterExcludedNodes()
-	-- Les retraits sont relevés d'abord et appliqués ensuite. Retirer pendant le parcours
-	-- laissait des arêtes qui pointaient vers des nœuds déjà partis, et c'est sur elles que le
-	-- tri se cassait plus loin.
 	local doomed = {}
 
 	for module, _ in self.nodes do

@@ -1,1 +1,11 @@
 ClassName: Frame
+Properties:
+  Active: true
+  AnchorPoint: 0.5, 0.5
+  AutomaticSize: Y
+  BackgroundColor3: '#2E2E2E'
+  BorderColor3: '#000000'
+  BorderSizePixel: 0
+  Position: 0.5, 0, 0.5, 0
+  Size: 1, 0, 0, 0
+  ZIndex: 11

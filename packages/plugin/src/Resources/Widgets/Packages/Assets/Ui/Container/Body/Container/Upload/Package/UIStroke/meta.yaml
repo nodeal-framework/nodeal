@@ -1,1 +1,5 @@
 ClassName: UIStroke
+Properties:
+  ApplyStrokeMode: Border
+  Color: '#383B49'
+  ZIndex: 2

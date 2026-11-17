@@ -1,1 +1,3 @@
 ClassName: Script
+Properties:
+  RunContext: Plugin

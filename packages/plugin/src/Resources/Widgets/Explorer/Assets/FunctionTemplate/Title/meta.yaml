@@ -1,1 +1,16 @@
 ClassName: TextLabel
+Properties:
+  AutomaticSize: X
+  BackgroundColor3: '#FFFFFF'
+  BackgroundTransparency: 1
+  BorderColor3: '#000000'
+  BorderSizePixel: 0
+  Font: SourceSans
+  FontFace: rbxasset://fonts/families/SourceSansPro.json, Regular, Normal
+  LayoutOrder: 1
+  Size: 0, 0, 1, 0
+  Text: ''
+  TextColor: Mid gray
+  TextColor3: '#CDCDCD'
+  TextSize: 20
+  ZIndex: 10

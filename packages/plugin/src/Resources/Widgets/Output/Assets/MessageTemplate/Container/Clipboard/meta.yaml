@@ -1,1 +1,23 @@
 ClassName: TextBox
+Properties:
+  Active: false
+  AutoLocalize: false
+  AutomaticSize: XY
+  BackgroundColor3: '#FFFFFF'
+  BackgroundTransparency: 1
+  BorderColor3: '#000000'
+  BorderSizePixel: 0
+  ClearTextOnFocus: false
+  Font: SourceSans
+  FontFace: rbxasset://fonts/families/SourceSansPro.json, Regular, Normal
+  PlaceholderColor3: '#2E2E2E'
+  Selectable: false
+  Text: ''
+  TextColor3: '#2E2E2E'
+  TextDirection: LeftToRight
+  TextEditable: false
+  TextSize: 20
+  TextTransparency: 0.75
+  TextXAlignment: Left
+  TextYAlignment: Top
+  ZIndex: 2

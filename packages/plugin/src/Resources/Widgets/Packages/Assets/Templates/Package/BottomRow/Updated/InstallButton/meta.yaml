@@ -1,1 +1,11 @@
 ClassName: ImageButton
+Properties:
+  Active: false
+  AutoButtonColor: false
+  AutomaticSize: X
+  BackgroundColor3: '#335FFF'
+  BorderSizePixel: 0
+  LayoutOrder: 4
+  Selectable: false
+  Size: 0, 0, 0, 20
+  ZIndex: 2

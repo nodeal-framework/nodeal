@@ -1,1 +1,12 @@
 ClassName: TextLabel
+Properties:
+  AutomaticSize: X
+  BackgroundTransparency: 1
+  Font: GothamMedium
+  FontFace: rbxasset://fonts/families/GothamSSm.json, Medium, Normal
+  Size: 0, 0, 1, 0
+  Text: ''
+  TextColor: Light lilac
+  TextColor3: '#A7A9CE'
+  TextSize: 10
+  ZIndex: 2

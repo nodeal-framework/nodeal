@@ -52,9 +52,11 @@ local function _request(method: string, path: string, payload: any?, token: stri
 	local ok, res = pcall(HttpService.RequestAsync, HttpService, options)
 	if not ok then return false, { error = tostring(res) } end
 
-	local body = pcall(function() return HttpService:JSONDecode(res.Body) end)
-		and HttpService:JSONDecode(res.Body)
-		or  { error = res.Body }
+	-- decoded once: a package download is megabytes of body
+	local decoded, body = pcall(HttpService.JSONDecode, HttpService, res.Body)
+	if not decoded then
+		body = { error = res.Body }
+	end
 
 	return res.StatusCode >= 200 and res.StatusCode < 300, body
 end

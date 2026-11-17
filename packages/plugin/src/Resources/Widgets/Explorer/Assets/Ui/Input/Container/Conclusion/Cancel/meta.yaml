@@ -1,1 +1,8 @@
 ClassName: ImageButton
+Properties:
+  BackgroundColor3: '#2E2E2E'
+  BorderColor3: '#000000'
+  BorderSizePixel: 0
+  ImageTransparency: 1
+  Size: 1, 0, 1, 0
+  ZIndex: 12

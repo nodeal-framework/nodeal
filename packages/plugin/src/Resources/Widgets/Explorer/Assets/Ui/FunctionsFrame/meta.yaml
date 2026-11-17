@@ -1,5 +1,14 @@
 ClassName: Frame
 Tags:
   - Nodeal:Theme
+Properties:
+  AnchorPoint: 0, 1
+  AutomaticSize: Y
+  BackgroundColor3: '#191A1F'
+  BorderColor3: '#000000'
+  BorderSizePixel: 0
+  Size: 0, 200, 0, 0
+  Visible: false
+  ZIndex: 10
 Attributes:
   _BackgroundColor3: MainBackground

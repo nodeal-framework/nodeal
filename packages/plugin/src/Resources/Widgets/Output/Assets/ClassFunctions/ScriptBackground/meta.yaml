@@ -1,1 +1,8 @@
 ClassName: Frame
+Properties:
+  AutoLocalize: false
+  BackgroundColor3: '#252525'
+  BorderColor3: '#000000'
+  BorderSizePixel: 0
+  Interactable: false
+  Size: 1, 35, 1, 0

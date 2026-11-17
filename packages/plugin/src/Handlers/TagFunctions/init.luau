@@ -219,10 +219,10 @@ end
 local function getTagged(tag: string, widgets: {}): { GuiObject? }
 	local instances = CollectionService:GetTagged(tag)
 
-	for _, instance in instances do
-		if isDescendant(instance, widgets) then continue end
+	for index = #instances, 1, -1 do
+		if isDescendant(instances[index], widgets) then continue end
 
-		local index = table.find(instances, instance)
+		-- backwards: a removal does not shift what is left to visit
 		table.remove(instances, index)
 	end
 

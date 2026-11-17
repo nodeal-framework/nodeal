@@ -1,1 +1,3 @@
 ClassName: UIPadding
+Properties:
+  PaddingBottom: 0, 8

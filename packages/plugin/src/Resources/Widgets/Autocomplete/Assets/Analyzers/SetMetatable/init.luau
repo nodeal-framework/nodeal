@@ -21,42 +21,42 @@ local SetMetatable = {}
     @param visited Optional recursion guard to prevent cyclic dependencies.
 ]=]
 function SetMetatable:CopyMembers(parser: any, targetName: string, metaName: string, visited: { [string]: boolean }?)
-    if not (targetName and metaName) then return end
-    if type(targetName) ~= "string" or type(metaName) ~= "string" then return end
-    if targetName == metaName then return end
+	if not (targetName and metaName) then return end
+	if type(targetName) ~= "string" or type(metaName) ~= "string" then return end
+	if targetName == metaName then return end
 
-    local seen = visited or {}
-    if seen[metaName] then return end
-    seen[metaName] = true
+	local seen = visited or {}
+	if seen[metaName] then return end
+	seen[metaName] = true
 
-    local targetTable = parser.tables[targetName]
-    local metaTable = parser.tables[metaName]
+	local targetTable = parser.tables[targetName]
+	local metaTable = parser.tables[metaName]
 
-    if not targetTable then
-        targetTable = {}
-        parser.tables[targetName] = targetTable
-    end
+	if not targetTable then
+		targetTable = {}
+		parser.tables[targetName] = targetTable
+	end
 
-    if metaTable then
-        for key, value in metaTable do
-            if type(key) == "string" and string.sub(key, 1, 2) == "__" then
-                if targetTable[key] == nil then
-                    targetTable[key] = value
-                end
-                continue
-            end
+	if metaTable then
+		for key, value in metaTable do
+			if type(key) == "string" and string.sub(key, 1, 2) == "__" then
+				if targetTable[key] == nil then
+					targetTable[key] = value
+				end
+				continue
+			end
 
-            if targetTable[key] == nil then
-                if type(value) == "table" then
-                    local clonedItem = table.clone(value)
-                    clonedItem.table = targetName
-                    targetTable[key] = clonedItem
-                else
-                    targetTable[key] = value
-                end
-            end
-        end
-    end
+			if targetTable[key] == nil then
+				if type(value) == "table" then
+					local clonedItem = table.clone(value)
+					clonedItem.table = targetName
+					targetTable[key] = clonedItem
+				else
+					targetTable[key] = value
+				end
+			end
+		end
+	end
 end
 
 --[=[
@@ -65,26 +65,26 @@ end
     @param parser The current Parser instance.
 ]=]
 function SetMetatable:Init(parser: any)
-    parser.metatableLinks = parser.metatableLinks or {}
+	parser.metatableLinks = parser.metatableLinks or {}
 
-    parser:OnCall("setmetatable", function(args, lineIndex)
-        local line = parser.lines[lineIndex] or ""
-        local targetName = args[1]
-        local metaName = args[2]
+	parser:OnCall("setmetatable", function(args, lineIndex)
+		local line = parser.lines[lineIndex] or ""
+		local targetName = args[1]
+		local metaName = args[2]
 
-        -- Support variable assignment: local varName = setmetatable(...)
-        local assignedVar = line:match("([%w_]+)%s*=%s*setmetatable")
-        if assignedVar and type(metaName) == "string" then
-            if not targetName or targetName == "{}" or targetName == "table" or targetName == "self" then
-                targetName = assignedVar
-            end
-        end
+		-- Support variable assignment: local varName = setmetatable(...)
+		local assignedVar = line:match("([%w_]+)%s*=%s*setmetatable")
+		if assignedVar and type(metaName) == "string" then
+			if not targetName or targetName == "{}" or targetName == "table" or targetName == "self" then
+				targetName = assignedVar
+			end
+		end
 
-        if type(targetName) == "string" and type(metaName) == "string" then
-            table.insert(parser.metatableLinks, { target = targetName, meta = metaName })
-            self:CopyMembers(parser, targetName, metaName)
-        end
-    end)
+		if type(targetName) == "string" and type(metaName) == "string" then
+			table.insert(parser.metatableLinks, { target = targetName, meta = metaName })
+			self:CopyMembers(parser, targetName, metaName)
+		end
+	end)
 end
 
 --[=[
@@ -94,17 +94,17 @@ end
     @param parser The current Parser instance.
 ]=]
 function SetMetatable:Run(parser: any)
-    if not parser.metatableLinks or #parser.metatableLinks == 0 then return end
+	if not parser.metatableLinks or #parser.metatableLinks == 0 then return end
 
-    for _, link in parser.metatableLinks do
-        local visited = { [link.target] = true }
-        self:CopyMembers(parser, link.target, link.meta, visited)
+	for _, link in parser.metatableLinks do
+		local visited = { [link.target] = true }
+		self:CopyMembers(parser, link.target, link.meta, visited)
 
-        local indexRef = parser.source:match(link.meta .. "%.__index%s*=%s*([%w_]+)")
-        if indexRef and indexRef ~= "function" and indexRef ~= link.meta and parser.tables[indexRef] then
-            self:CopyMembers(parser, link.target, indexRef, visited)
-        end
-    end
+		local indexRef = parser.source:match(link.meta .. "%.__index%s*=%s*([%w_]+)")
+		if indexRef and indexRef ~= "function" and indexRef ~= link.meta and parser.tables[indexRef] then
+			self:CopyMembers(parser, link.target, indexRef, visited)
+		end
+	end
 end
 
 return SetMetatable

@@ -1,1 +1,14 @@
 ClassName: TextLabel
+Properties:
+  AutomaticSize: X
+  BackgroundTransparency: 1
+  Font: GothamMedium
+  FontFace: rbxasset://fonts/families/GothamSSm.json, Medium, Normal
+  LayoutOrder: 2
+  Size: 0, 0, 0, 14
+  Text: 1.8K
+  TextColor: Sand violet metallic
+  TextColor3: '#958EA3'
+  TextSize: 10
+  TextXAlignment: Left
+  ZIndex: 2

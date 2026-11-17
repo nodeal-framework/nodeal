@@ -1,1 +1,6 @@
 ClassName: UIListLayout
+Properties:
+  FillDirection: Horizontal
+  HorizontalAlignment: Center
+  SortOrder: LayoutOrder
+  VerticalAlignment: Center

@@ -1,5 +1,9 @@
 ClassName: UIStroke
 Tags:
   - Nodeal:Theme
+Properties:
+  Color: '#335FFF'
+  Enabled: false
+  Thickness: 1.5
 Attributes:
   _Color: OnboardingCover

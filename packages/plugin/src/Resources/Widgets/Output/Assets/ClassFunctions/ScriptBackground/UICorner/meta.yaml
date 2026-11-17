@@ -1,1 +1,7 @@
 ClassName: UICorner
+Properties:
+  BottomLeftRadius: 0, 5
+  BottomRightRadius: 0, 5
+  CornerRadius: 0, 5
+  TopLeftRadius: 0, 5
+  TopRightRadius: 0, 5

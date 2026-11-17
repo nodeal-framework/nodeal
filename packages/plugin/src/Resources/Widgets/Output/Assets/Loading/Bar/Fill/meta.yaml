@@ -1,1 +1,8 @@
 ClassName: Frame
+Properties:
+  BackgroundColor3: '#62B040'
+  BorderColor3: '#000000'
+  BorderSizePixel: 0
+  ClipsDescendants: true
+  Size: 0, 0, 1, 0
+  ZIndex: 2

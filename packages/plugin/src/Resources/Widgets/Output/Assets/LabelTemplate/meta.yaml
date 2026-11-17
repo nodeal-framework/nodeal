@@ -1,1 +1,24 @@
 ClassName: TextButton
+Properties:
+  Active: false
+  AutoButtonColor: false
+  AutoLocalize: false
+  AutomaticSize: XY
+  BackgroundColor3: '#FFFFFF'
+  BackgroundTransparency: 1
+  BorderColor3: '#000000'
+  BorderSizePixel: 0
+  Font: SourceSans
+  FontFace: rbxasset://fonts/families/SourceSansPro.json, Regular, Normal
+  Interactable: false
+  RichText: true
+  Selectable: false
+  Text: ''
+  TextColor: Mid gray
+  TextColor3: '#CDCDCD'
+  TextDirection: LeftToRight
+  TextSize: 20
+  TextWrapped: true
+  TextXAlignment: Left
+  TextYAlignment: Top
+  ZIndex: 2

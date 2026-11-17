@@ -1,5 +1,23 @@
 ClassName: TextLabel
 Tags:
   - Nodeal:Theme
+Properties:
+  AnchorPoint: 0.5, 0.5
+  AutomaticSize: X
+  BackgroundColor3: '#FFFFFF'
+  BackgroundTransparency: 1
+  BorderColor3: '#000000'
+  BorderSizePixel: 0
+  Font: SourceSans
+  FontFace: rbxasset://fonts/families/SourceSansPro.json, Regular, Normal
+  LayoutOrder: 1
+  Position: 0.5, 0, 0.5, 0
+  Size: 0, 0, 1, 0
+  Text: Toggle
+  TextColor: Pearl
+  TextColor3: '#E7E7EC'
+  TextSize: 16
+  TextXAlignment: Left
+  ZIndex: 20
 Attributes:
   _TextColor3: BrightText

@@ -1,1 +1,8 @@
 ClassName: Frame
+Properties:
+  AnchorPoint: 0, 1
+  BackgroundColor3: '#353741'
+  BorderSizePixel: 0
+  Position: 0, 0, 1, 0
+  Size: 1, 0, 0, 2
+  ZIndex: 2

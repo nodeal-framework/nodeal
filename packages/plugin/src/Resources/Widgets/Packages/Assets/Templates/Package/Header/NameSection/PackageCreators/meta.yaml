@@ -1,1 +1,14 @@
 ClassName: TextLabel
+Properties:
+  BackgroundTransparency: 1
+  Font: Gotham
+  FontFace: rbxasset://fonts/families/GothamSSm.json, Regular, Normal
+  LayoutOrder: 2
+  Size: 1, 0, 0, 13
+  Text: by FURYMOB_1
+  TextColor: Cadet blue
+  TextColor3: '#9FADC0'
+  TextSize: 12
+  TextTruncate: AtEnd
+  TextXAlignment: Left
+  ZIndex: 2

@@ -1,3 +1,12 @@
 ClassName: Frame
 Tags:
   - Selectable
+Properties:
+  AutomaticSize: Y
+  BackgroundColor3: '#FFFFFF'
+  BackgroundTransparency: 1
+  BorderColor3: '#000000'
+  BorderSizePixel: 0
+  ClipsDescendants: true
+  Size: 1, 0, 0, 0
+  Visible: false

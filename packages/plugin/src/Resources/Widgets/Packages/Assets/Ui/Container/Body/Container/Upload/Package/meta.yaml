@@ -1,1 +1,13 @@
 ClassName: TextButton
+Properties:
+  BackgroundColor3: '#202227'
+  BorderColor3: '#000000'
+  BorderSizePixel: 0
+  Font: GothamMedium
+  FontFace: rbxasset://fonts/families/GothamSSm.json, Medium, Normal
+  Size: 1, 0, 0, 50
+  Text: Export Package
+  TextColor: Fog
+  TextColor3: '#C7D4E4'
+  TextSize: 14
+  ZIndex: 2

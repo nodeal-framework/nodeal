@@ -1,1 +1,20 @@
 ClassName: ScrollingFrame
+Properties:
+  AutomaticCanvasSize: Y
+  BackgroundTransparency: 1
+  BorderSizePixel: 0
+  BottomImage: rbxasset://textures/StudioToolbox/ScrollBarBottom.png
+  BottomImageContent: rbxasset://textures/StudioToolbox/ScrollBarBottom.png
+  CanvasSize: 0, 0, 0, 0
+  ElasticBehavior: Always
+  LayoutOrder: 1
+  MidImage: rbxasset://textures/StudioToolbox/ScrollBarMiddle.png
+  MidImageContent: rbxasset://textures/StudioToolbox/ScrollBarMiddle.png
+  ScrollBarImageColor3: '#494D5A'
+  ScrollBarThickness: 8
+  ScrollingDirection: Y
+  Size: 1, 0, 1, 0
+  TopImage: rbxasset://textures/StudioToolbox/ScrollBarTop.png
+  TopImageContent: rbxasset://textures/StudioToolbox/ScrollBarTop.png
+  VerticalScrollBarInset: ScrollBar
+  ZIndex: 2

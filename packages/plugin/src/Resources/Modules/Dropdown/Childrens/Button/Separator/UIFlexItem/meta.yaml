@@ -1,1 +1,3 @@
 ClassName: UIFlexItem
+Properties:
+  FlexMode: Fill

@@ -1,1 +1,17 @@
 ClassName: TextLabel
+Properties:
+  AutomaticSize: Y
+  BackgroundTransparency: 1
+  Font: GothamMedium
+  FontFace: rbxasset://fonts/families/GothamSSm.json, Medium, Normal
+  LayoutOrder: 3
+  Size: 1, 0, 0, 0
+  Text: Nodeal is the first fullstack framework built entirely for Roblox Studio. Clean architecture, blazing performance, absolute developer joy.
+  TextColor: Fog
+  TextColor3: '#C7D4E4'
+  TextSize: 12
+  TextTruncate: AtEnd
+  TextWrapped: true
+  TextXAlignment: Left
+  TextYAlignment: Top
+  ZIndex: 2

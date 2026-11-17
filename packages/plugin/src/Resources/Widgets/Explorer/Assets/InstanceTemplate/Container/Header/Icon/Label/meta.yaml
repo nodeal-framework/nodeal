@@ -1,1 +1,20 @@
 ClassName: TextLabel
+Properties:
+  AnchorPoint: 0.5, 0.5
+  BackgroundColor3: '#FFFFFF'
+  BackgroundTransparency: 1
+  BorderColor3: '#000000'
+  BorderSizePixel: 0
+  Font: SourceSansBold
+  FontFace: rbxasset://fonts/families/SourceSansPro.json, Bold, Normal
+  Interactable: false
+  Position: 0.5, 0, 0.5, 0
+  Size: 1.149999976158142, 0, 1.149999976158142, 0
+  Text: ''
+  TextColor: Mid gray
+  TextColor3: '#CDCDCD'
+  TextScaled: true
+  TextSize: 14
+  TextWrapped: true
+  Visible: false
+  ZIndex: 5

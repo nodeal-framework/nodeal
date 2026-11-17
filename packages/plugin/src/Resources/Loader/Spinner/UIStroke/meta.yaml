@@ -1,0 +1,9 @@
+ClassName: UIStroke
+Tags:
+  - Nodeal:Theme
+Properties:
+  ApplyStrokeMode: Border
+  Color: '#BCBEC8'
+  Thickness: 3
+Attributes:
+  _Color: MainText

@@ -1,5 +1,8 @@
 ClassName: UIStroke
 Tags:
   - Nodeal:Theme
+Properties:
+  ApplyStrokeMode: Border
+  Color: '#353741'
 Attributes:
   _Color: DialogButtonBorder
