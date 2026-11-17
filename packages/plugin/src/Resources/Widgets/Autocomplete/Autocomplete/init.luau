@@ -113,6 +113,7 @@ local utils = require(Resources.Modules.Utils)
 
 local PathParser = require(assets.PathParser)
 local ParsingHandler = require(assets.ParsingHandler)
+local Diagnostics = require(assets.Diagnostics)
 
 local ApiDump = require(assets.ApiDump)
 local TypeParser = require(assets.TypeParser)
@@ -1825,6 +1826,8 @@ end
 
 --// Indexer //--
 local indexing_toggled = true
+local indexReady = false
+local diagnostics
 
 local RootConnectors = {}
 
@@ -1960,6 +1963,14 @@ EnqueueIndex = function(module: ModuleScript, isPriority: boolean?)
 
 				local roots = CollectionService:GetTagged(utils.manifest.TagRoot)
 				ParsingHandler.UpdateExecutionOrder(roots)
+
+				if not indexReady then
+					indexReady = true
+
+					if diagnostics then
+						diagnostics:refresh()
+					end
+				end
 			end)
 		end)
 	end
@@ -2567,8 +2578,33 @@ function autoComplete.Init(self: any, widget: string)
 		EnqueueIndex(mod, false)
 	end
 
+	-- Sans file active, l'index est deja a jour : les diagnostics peuvent se fier aux registres
+	-- des maintenant. Sinon ils restent muets jusqu'a la fin du vidage initial.
+	if not queueActive then
+		indexReady = true
+	end
+
+	diagnostics = Diagnostics.new({
+		isReady = function(): boolean
+			return indexReady and not queueActive
+		end,
+		getServices = function()
+			return autoComplete.ServicesCompletions
+		end,
+		getModules = function()
+			return autoComplete.ModulesCompletions
+		end,
+		isDecorator = DecoratorLookup,
+	})
+
+	diagnostics:register()
+
 	plugin.Unloading:Connect(function()
 		indexing_toggled = false
+
+		if diagnostics then
+			diagnostics:unregister()
+		end
 	end)
 end
 
