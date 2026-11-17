@@ -61,6 +61,8 @@ local function EnableWidgets()
 end
 
 local function MountVersionsMenu()
+	if not versions then return end
+
 	for index: number, version_storage: any in versions do
 		version_menu:AddNewAction(version_storage.version, version_storage.version)
 
@@ -99,8 +101,8 @@ end
 --// Public //--
 local Setup = {}
 
-function Setup.Clicked(self: any, widget: string)
-	local widget = self.widgets[widget]
+function Setup.Clicked(self: any, widgetName: string)
+	local widget = self.widgets[widgetName]
 
 	if not versions and not FetchVersions() then
 		warn("[Nodeal] nodeal.dev could not be reached: no version to install.")

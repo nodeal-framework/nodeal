@@ -28,7 +28,8 @@ The runtime uses a `Configuration` instance named `Manifest` located under its h
 | **`OptimizeProduction`** | `boolean` | `true` | When active outside Studio: disables debug callsite trace generation and shortens internal identifier strings for speed. |
 | **`PrivatePrint`** | `boolean` | `true` | When running in production: suppresses all `print()` outputs to prevent client log leaks. |
 | **`PrivateWarn`** | `boolean` | `true` | When running in production: suppresses all `warn()` outputs in live games. |
-| **`PrivateError`** | `boolean` | `true` | When running in production: yields offending threads rather than exposing full stack traces to players. |
+| **`PrivateError`** | `boolean` | `true` | When running in production: raises a bare error (no message, no trace) instead of exposing stack traces to players. |
+| **`IntegrityWatch`** | `boolean` | `false` | Opt-in client watchdog: every 5 seconds, re-checks that the sealed tables are still frozen, the metatables were not swapped and tracked functions kept their source. Only required if your game needs active tamper detection. |
 
 ---
 

@@ -184,7 +184,7 @@ Nodeal intercepts standard logging functions to provide **Source Call Tracing** 
   A wrapped version of Roblox's global <code class="language-lua">print()</code>.
   
   * **Source Tracing**: In Studio and development environments, Nodeal automatically prepends `[ScriptFullName:Line:]` to the output for instant debugging.
-  * **Production Suppression**: If the game is running in production and the manifest attribute `PrivatePrint` is set to `true`, `print()` yields silently, preventing client log snooping.
+  * **Production Suppression**: If the game is running in production and the manifest attribute `PrivatePrint` is set to `true`, `print()` returns without logging, preventing client log snooping.
 
   ### Parameters
   * `...any`: Comma-separated values to log to output.
@@ -203,7 +203,7 @@ Nodeal intercepts standard logging functions to provide **Source Call Tracing** 
 <Method name="error" parameters="message?: string, level?: number" returns="void" scope="Shared">
   A wrapped version of Roblox's global <code class="language-lua">error()</code>.
   
-  * **Production Defense**: If the manifest attribute `PrivateError` is active in production, this call immediately invokes `coroutine.yield()` to permanently freeze the offending thread without exposing an exploitable error trace to the client console.
+  * **Production Defense**: If the manifest attribute `PrivateError` is active in production, this call raises a bare `error("")` so the offending thread stops without exposing a message or a stack trace to the client console. The thread is never yielded: a yield inside a `pcall` or a metamethod hangs the call instead of stopping it.
   * **Call Stack Alignment**: Adjusts the stack level by `+1` so stack traces pinpoint the exact developer call site rather than the Nodeal virtualization wrapper.
 
   ### Parameters
@@ -223,8 +223,8 @@ Nodeal intercepts standard logging functions to provide **Source Call Tracing** 
   * `T`: The evaluated truthy value.
 </Method>
 
-<Method name="debug" parameters="" returns="Proxy<debug>" scope="Shared">
-  A proxied wrapper around Luau's native `debug` library. In addition to standard debug functions (`debug.info`, `debug.traceback`, etc.), it exposes the framework's custom output primitives as:
+<Method name="debug" parameters="" returns="debug" scope="Shared">
+  A copy of Luau's native `debug` library (a plain table, so `debug.profilebegin` stays cheap on the hot path). In addition to the standard debug functions (`debug.info`, `debug.traceback`, etc.), it exposes the framework's custom output primitives as:
   * `debug.print(...)`
   * `debug.warn(...)`
   * `debug.error(message?, level?)`

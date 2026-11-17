@@ -17,7 +17,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local CollectionService = game:GetService("CollectionService")
 
 --// Contants //--
-local native_env: { [any]: any } = nil :: any
+local native_env: { [any]: any } = getfenv()
 local loader_source = debug.info(1, "s")
 
 local client, server, studio = RunService:IsClient(), RunService:IsServer(), RunService:IsStudio()
@@ -1194,7 +1194,7 @@ local function _load_registry(): ()
 		end
 
 		-- Protected in every build, so a published game stops the way Studio does.
-		local success = pcall(require, node.Instance)
+		local success, message = pcall(require, node.Instance)
 
 		if client then
 			node.Instance.Name = ""
@@ -1212,7 +1212,9 @@ local function _load_registry(): ()
 					remaining_node.Instance = nil
 				end
 			end
-			coroutine.yield()
+
+			-- Silent boots are the worst kind of bug: say which module failed and why.
+			universe.error(`Error while loading '{node:GetFullName()}' during boot:\n{message}`, 0)
 		end
 	end
 end
@@ -1401,18 +1403,19 @@ local common_globals = {
 	"OverlapParams", "DateTime"
 }
 
-local function _adopt_env(env: { [any]: any }): ()
-	native_env = env
-
+local function _adopt_env(): ()
 	for _, name in common_globals do
 		if rawget(universe, name) == nil then
-			universe[name] = env[name]
+			universe[name] = native_env[name]
 		end
 	end
 
-	-- Not locked with __metatable: table.freeze refuses such a table, and _seal freezes universe.
-	setmetatable(universe, table.freeze({ __index = env }))
+	-- A frozen metatable, not a frozen universe: universe stays writable for RegisterBuiltIn,
+	-- and the fallback is the loader's env rather than the first module's.
+	setmetatable(universe, table.freeze({ __index = native_env }))
 end
+
+_adopt_env()
 
 local function _inject(scope: (...any?) -> (...any?), env: { [any]: any }): ()
 	env.script = instance_registry[env.script]
@@ -1427,10 +1430,6 @@ local function _hook_load(): ()
 		__call = function(): (any?) -> (nil)
 			local scope = debug.info(2, "f")
 			local env = getfenv(scope)
-
-			if not native_env then
-				_adopt_env(env)
-			end
 
 			local source = env.script
 			_scan(not source or not instance_registry[source])
@@ -1464,18 +1463,21 @@ local function _hook_unload(): ()
 	}))
 end
 
--- Booted, the env is final: changing it now takes an executor's setreadonly or an in-place hook, which the client looks for.
+-- Booted, the module environment is final: the proxy tables are frozen and the metatables
+-- are trapped. The registries stay writable on purpose: RegisterService/RegisterModule/
+-- RegisterBuiltIn/RegisterDecorator are public runtime APIs, and the lazy service proxy
+-- waits for a registration that may happen after the boot.
 local function _seal(): ()
-	local sealed = { universe, rawget(universe.game, "extended"), service_registry, name_registry, instance_registry, decorators, Proxy, Node, module_env }
+	local immutable = { Proxy, Node, module_env }
 
-	for _, tbl in sealed do
+	for _, tbl in immutable do
 		if not table.isfrozen(tbl) then
 			table.freeze(tbl)
 		end
 	end
 
-	-- The server runs no foreign code.
-	if not client then return end
+	-- The client watchdog is opt-in: set manifest.IntegrityWatch in the place to enable it.
+	if not client or not manifest.IntegrityWatch then return end
 
 	local is_frozen, info = table.isfrozen, debug.info
 	local trap, meta = getmetatable(_G), getmetatable(universe)
@@ -1489,9 +1491,11 @@ local function _seal(): ()
 		end
 	end
 
-	for _, tbl in sealed do
+	for _, tbl in immutable do
 		track(tbl)
 	end
+
+	track(universe)
 
 	for _, service in service_registry do
 		if type(service) == "table" then
@@ -1504,7 +1508,7 @@ local function _seal(): ()
 		while task.wait(5) do
 			local intact = rawequal(getmetatable(_G), trap) and rawequal(getmetatable(universe), meta)
 
-			for _, tbl in sealed do
+			for _, tbl in immutable do
 				intact = intact and is_frozen(tbl)
 			end
 

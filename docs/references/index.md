@@ -74,9 +74,9 @@ Nodeal replaces and extends standard Luau globals inside virtualized modules:
 | **`getmetatable`** | `(tbl: table)` | `table?` | Respects custom `__getmetatable` closures to secure internal metatables. |
 | **`print`** | `(...any)` | `void` | Prepends source script and line traces (`[script:line]`); respects `PrivatePrint` in production. |
 | **`warn`** | `(...any)` | `void` | Warning logger with source traces; respects `PrivateWarn` in production. |
-| **`error`** | `(message?: string, level?: number)` | `void` | Verbose runtime error; silently yields thread in production when `PrivateError` is active. |
+| **`error`** | `(message?: string, level?: number)` | `void` | Verbose runtime error; raises a bare error in production when `PrivateError` is active. |
 | **`assert`** | `(value: T?, message?: string, level?: number)` | `T` | Assertion handler routing failures through the Nodeal runtime error boundary. |
-| **`debug`** | `Proxy<debug>` | `table` | Proxied debug library exposing framework-wrapped logging primitives. |
+| **`debug`** | `debug` | `table` | Copy of the debug library exposing framework-wrapped logging primitives. |
 | **`_G`** | `() -> (content: any?) -> nil` | `function` | The framework handshake accessor captured at the top of every module. |
 
 ---

@@ -78,25 +78,29 @@ Nodeal includes privacy controls configured on the runtime **`Manifest`**:
 | :--- | :--- | :--- | :--- |
 | **`PrivatePrint`** | `boolean` | `true` | Suppresses `print()` messages so they never show in player consoles. |
 | **`PrivateWarn`** | `boolean` | `true` | Suppresses `warn()` diagnostics in live servers. |
-| **`PrivateError`** | `boolean` | `true` | Yields the calling thread instead of printing stack traces. |
+| **`PrivateError`** | `boolean` | `true` | Raises a bare error (no message, no trace) instead of exposing stack traces to players. |
 | **`OptimizeProduction`** | `boolean` | `true` | Disables debug callsite traces and shortens internal identifier strings for speed. |
 
-### Why Yield on Error?
-When `PrivateError` is active in production, failed assertions and errors freeze the suspect thread rather than throwing an engine error. This gives exploiters no stack traces to read, while keeping the rest of your server running smoothly.
+### Why an Empty Error?
+When `PrivateError` is active in production, failed assertions and errors stop the offending thread with a bare `error("")` rather than throwing the original message. The thread still aborts, so the failure is never silently swallowed, but exploiters get no stack trace and no message to read. (Yielding the thread was tried before: a yield inside a `pcall` or a metamethod hangs the call instead of stopping it, which broke every `pcall`/`assert` in a published game.)
 
 ---
 
 ## Active Tamper Detection
 
-Nodeal continuously monitors framework integrity:
+Nodeal monitors framework integrity:
 
-* **Unauthorized Handshakes**: Ensures `_G()` is only called by authorized modules within tagged root containers.
-* **Lifecycle State Protection**: Watches for external attempts to manipulate or fake framework completion flags.
-* **Runtime Relocation**: Detects if core framework scripts are unexpectedly reparented.
+* **Unauthorized Handshakes** (always on): after the boot completes, `_G()` no longer returns the virtualization hook. Any further handshake is treated as injected code. The module environment, the proxy tables and the `Manifest` attributes are sealed at that point.
+* **Lifecycle State Protection** (always on): watches for external attempts to manipulate or fake framework completion flags.
+* **Runtime Relocation** (always on): detects if core framework scripts are unexpectedly reparented.
+* **Integrity Watchdog** (opt-in, `IntegrityWatch` manifest attribute): a client-side task re-checks every 5 seconds that the sealed tables are still frozen, that the metatables were not swapped, and that tracked functions still point at their original source. It is off by default because it only covers the framework's own tables — not your module methods — and because legitimate in-place monkey-patching would trip it.
 
 ### Behavior
 * **In Studio**: Throws an immediate, descriptive error in the Output window to help you debug configuration mistakes.
 * **In Live Games**: Signals your networking layer to desynchronize the tampered client, preventing unauthorized remote requests from reaching the server.
+
+### Runtime Registration Is Still Supported
+The watchdog seals the module environment, never the public registries: `game:RegisterService()`, `game:RegisterModule()`, `game:RegisterBuiltIn()` and `game:RegisterDecorator()` remain writable after the boot. This is what allows the lazy `game:GetService()` proxy to resolve a service registered later.
 
 ---
 

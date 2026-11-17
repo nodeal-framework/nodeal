@@ -1,5 +1,5 @@
 --// Constants //--
-const Handlers = script.Parent.Handlers
+local Handlers = script.Parent.Handlers
 
 --// Script //--
 local pluginClass = require(Handlers.PluginHandler)(plugin)

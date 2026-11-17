@@ -140,7 +140,7 @@ In production builds, the client runtime cleans script references from the DataM
 The runtime monitors client-server synchronization states. If unauthorized modifications or spoofed calls are detected:
 * In Studio, it reports a clear diagnostic warning to help catch configuration mistakes.
 * In live games, it invalidates network communication from the suspect client.
-* When `PrivateError` is enabled in the Manifest, suspect threads are yielded rather than leaking debug stack traces.
+* When `PrivateError` is enabled in the Manifest, suspect threads stop with a bare error rather than leaking debug stack traces.
 
 ---
 

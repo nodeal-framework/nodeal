@@ -12,7 +12,6 @@
 
 local ServerStorage = game:GetService("ServerStorage")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local CollectionService = game:GetService("CollectionService")
 local SerializationService = game:GetService("SerializationService")
 local ChangeHistoryService = game:GetService("ChangeHistoryService")
 
