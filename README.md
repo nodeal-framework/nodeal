@@ -24,6 +24,7 @@ local Config = game:GetModule("Config")
 
 --[=[
     @server
+    
     @param player The buyer.
     @param itemId The item to buy.
     @return The new balance, or nil if the purchase failed.
@@ -43,7 +44,6 @@ function ShopService:Buy(player: Player, itemId: string): number?
 end
 
 --[=[
-    @client
     @return The label shown in the shop UI.
 ]=]
 function ShopService:GetLabel(itemId: string): string
