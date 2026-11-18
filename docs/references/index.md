@@ -117,7 +117,7 @@ Declared in Luau block comments (`--[=[ ... ]=]`) directly above methods or modu
 | :--- | :--- | :--- |
 | **Context & Scoping** | `@server`, `@client`, `@context`, `@hidden` | Control server/client execution rules and autocomplete visibility. |
 | **Lifecycle & Priority** | `@build`, `@init`, `@priority` | Schedule constructor (`Build`) and ignition (`Init`) execution hooks. |
-| **IntelliSense & Tooltips** | `@param`, `@return`, `@yield`, `@see`, `@example`, `@alias`, `@deprecated`, `@overloads` | Power rich Studio hover tooltips, strikethrough warnings, and code samples. |
+| **IntelliSense & Tooltips** | `@param`, `@return`, `@yield`, `@see`, `@example`, `@alias`, `@deprecated`, `@overloads` | Power the autocomplete documentation panel, strikethrough warnings, and code samples. |
 | **Metaprogramming** | `@collect`, `@export`, `@extend` | Aggregate method collections into `.collected` and expand caller completions. |
 
 ---

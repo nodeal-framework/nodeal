@@ -39,7 +39,7 @@ The **Custom Explorer** replaces the generic Roblox Studio hierarchy view with a
 Standard Roblox Studio autocomplete cannot natively resolve dynamic dependencies or virtualized globals. Nodeal bridges this gap with a custom **TypeParser** and **TypeResolver** running natively in the plugin.
 
 ### Interactive Tooltips & Metadata
-When you document functions using Luau block comments, the plugin generates rich, formatted tooltip popups in Studio's script editor:
+When you document functions using Luau block comments, the plugin generates rich, formatted documentation in Studio's script editor:
 
 ```luau
 --[=[
@@ -48,6 +48,7 @@ When you document functions using Luau block comments, the plugin generates rich
     @param targetPosition World destination for projectile trajectory.
     @param projectileSpeed Velocity in studs per second.
     @return The spawned projectile model instance.
+    @yield Blocks until the cast has been validated by the server.
     @see https://www.nodeal.dev/docs
     @example
         local spell = SpellService:CastSpell(targetPos, 120)
@@ -57,8 +58,19 @@ function SpellService:CastSpell(targetPosition: Vector3, projectileSpeed: number
 end
 ```
 
+The `@param`, `@return` and `@yield` tags are grouped at the bottom of the documentation panel:
+
+```text
+→ targetPosition World destination for projectile trajectory.
+→ projectileSpeed Velocity in studs per second.
+↩ The spawned projectile model instance.
+⧗ Blocks until the cast has been validated by the server.
+```
+
+Parameter names are emphasized, and each parameter line starts with `→`. Parameters and the return value share the first group. Yield information is rendered in its own group, separated by a compact line break. Descriptions support inline `**bold**`, `*italic*`, `^superscript^` and `` `code` ``.
+
 ### Autocomplete Features Provided by Nodeal
-* **Parameter, Return & Yield Documentation**: Parses `@param`, `@return` and `@yield` annotations directly into the hover tooltip.
+* **Parameter, Return & Yield Documentation**: `@param`, `@return` and `@yield` render as a compact, grouped block in the autocomplete documentation panel.
 * **Syntax-Highlighted Examples**: Code blocks tagged with `@example` are formatted with full syntax highlighting.
 * **Deprecation Badges**: Marking a function with `@deprecated` applies a visual strikethrough in autocomplete dropdowns to warn team members.
 * **Dynamic Autocomplete Extensions (`@extend`)**: Functions decorated with `@extend` dynamically add new typed members and child tables to the caller's autocompletion popup as you write code.

@@ -65,8 +65,8 @@ Nodeal includes 18 built-in decorators categorized by architectural purpose:
 ### Documentation & IntelliSense
 | Tag | Target | Description | Autocomplete Schema |
 | :--- | :--- | :--- | :--- |
-| **`@param`** | Method | Documents a function parameter in the Studio hover tooltip. | `@param <name: string> [description: string]` |
-| **`@return`** | Method | Documents the return value of a function in the Studio hover tooltip. | `@return [description: string]` |
+| **`@param`** | Method | Documents a parameter in the autocomplete documentation panel. | `@param <name: string> [description: string]` |
+| **`@return`** | Method | Documents the return value in the autocomplete documentation panel. | `@return [description: string]` |
 | **`@yield`** | Method | Documents that a function yields, e.g. while waiting on a remote call. | `@yield [description: string]` |
 | **`@see`** | Method | Embeds a clickable external documentation URL into the hover tooltip. | `@see <url: string>` |
 | **`@example`** | Method | Embeds a syntax-highlighted code sample directly into the hover tooltip. | `@example <example: string>` |

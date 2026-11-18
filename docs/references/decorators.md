@@ -22,9 +22,9 @@ Decorators are declared inside standard Luau block comments (`--[=[ ... ]=]`) di
 | **`@build`** | Method | `true` | Schedules immediate execution during the module loading phase. |
 | **`@init`** | Method | `true` | Schedules execution during the Ignition phase (after all modules have built). |
 | **`@priority`** | Module Header | `math.huge` | Sets execution order priority (lower numbers load first). |
-| **`@param`** | Method | Required | Documents parameter names and descriptions in Studio hover tooltips. |
-| **`@return`** | Method | Optional | Documents return values and types in Studio hover tooltips. |
-| **`@yield`** | Method | Optional | Documents that a method yields and what it waits for. |
+| **`@param`** | Method | Required | Documents parameter names and descriptions in the autocomplete documentation panel. |
+| **`@return`** | Method | Optional | Documents the return value in the autocomplete documentation panel. |
+| **`@yield`** | Method | Optional | Documents that a method yields; rendered in its own group below the parameter and return lines. |
 | **`@see`** | Method | Required | Embeds an external documentation URL into the hover tooltip. |
 | **`@example`** | Method | Required | Embeds a syntax-highlighted code sample into the hover tooltip. |
 | **`@alias`** | Method | Required | Registers alternative names for a method in Studio autocomplete. |
@@ -158,8 +158,21 @@ Decorators are declared inside standard Luau block comments (`--[=[ ... ]=]`) di
 
 ## Documentation & IntelliSense Decorators
 
+`@param`, `@return` and `@yield` are rendered together below the free-form description of a function in the autocomplete documentation panel:
+
+```text
+Free-form description.
+
+→ name First parameter description.
+→ other Second parameter description.
+↩ What the function returns.
+⧗ Blocks until the remote call returns.
+```
+
+Parameter names are emphasized. Describe values with `**bold**`, `*italic*`, `^superscript^` or `` `code` ``. Escaping a marker with a backslash (`\*`, `` \` ``) keeps it literal.
+
 <Method name="@param" parameters="name: string, description?: string" returns="void" scope="Shared">
-  Documents a method parameter. The Studio Pre-Parser reads this tag to populate parameter names, types, and descriptions in the script editor hover tooltip.
+  Documents a method parameter. Rendered as a `→` line with the parameter name in bold in the autocomplete documentation panel.
 
   ### Example
   ```luau
@@ -172,7 +185,7 @@ Decorators are declared inside standard Luau block comments (`--[=[ ... ]=]`) di
 </Method>
 
 <Method name="@return" parameters="description?: string" returns="void" scope="Shared">
-  Documents the return value of a method in Studio hover tooltips.
+  Documents the return value of a method. Rendered as a `↩` line, grouped with the parameters.
 
   ### Example
   ```luau
@@ -184,7 +197,7 @@ Decorators are declared inside standard Luau block comments (`--[=[ ... ]=]`) di
 </Method>
 
 <Method name="@yield" parameters="description?: string" returns="void" scope="Shared">
-  Documents that a method yields before returning, so callers know it may block the current thread.
+  Documents that a method yields before returning, so callers know it may block the current thread. Rendered as a `⧗` line in its own group, after the parameter and return lines.
 
   ### Example
   ```luau

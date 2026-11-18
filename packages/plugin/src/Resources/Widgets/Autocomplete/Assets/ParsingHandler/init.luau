@@ -21,6 +21,7 @@ ApiDump:FetchApiDump()
 
 local TypeParser = require(Assets.TypeParser)
 local TypeResolver = require(Assets.TypeResolver)
+local DocFormatter = require(Assets.DocFormatter)
 local RegisterDecorator = require(Assets.Analyzers.RegisterDecorator)
 
 local Decorators: { [string]: (...any) -> () } = {}
@@ -622,6 +623,18 @@ function Parser:CreateCompletionItem(config: any)
 				})
 			end
 		end
+	end
+
+	-- Let every tag contribute before rendering its final documentation.
+	if item.__docEntries then
+		local success, rendered = pcall(DocFormatter.render, item.completion.documentation, item.__docEntries)
+
+		-- A malformed tag must never cost the completion item its docs.
+		if success and type(rendered) == "string" then
+			item.completion.documentation = rendered
+		end
+
+		item.__docEntries = nil
 	end
 
 	return item
