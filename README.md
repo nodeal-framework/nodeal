@@ -114,7 +114,7 @@ The full walkthrough is in [docs/guides/getting-started.md](docs/guides/getting-
   `game:GetService`.
 - **Modules by name.** `game:GetModule("Config")` survives file moves and resolves
   circular dependencies.
-- **Decorators in comments.** 17 built-in decorators for context, lifecycle, docs,
+- **Decorators in comments.** 18 built-in decorators for context, lifecycle, docs,
   autocomplete and metaprogramming. No build step.
 - **Studio toolchain.** Custom explorer, typed autocomplete, inline diagnostics and a
   package manager.

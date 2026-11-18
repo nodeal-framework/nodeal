@@ -87,7 +87,7 @@ Nodeal is actively maintained and battle-tested for enterprise production enviro
 * [x] **Virtual Execution Environment** — Production ready. Sandboxed per-module globals and zero state leakage.
 * [x] **Unified Service & Built-in Registry** — Production ready. Seamless engine service overriding and lazy resolution.
 * [x] **Dynamic Module Discovery** — Production ready. Fast O(1) location-agnostic module resolution.
-* [x] **Pre-Parser Decorator Engine** — Production ready. 17 built-in decorators and extensible custom decorator API.
+* [x] **Pre-Parser Decorator Engine** - Production ready. 18 built-in decorators and extensible custom decorator API.
 * [x] **Static Call Tracking & Collectors** — Production ready. Compile-time aggregation with `@collect` and `@export`.
 * [x] **Two-Phase Deterministic Lifecycle** — Production ready. Unified `Build` and `Init` lifecycle targets.
 * [x] **In-Studio Package Manager** — Production ready. Version-controlled package installation and dependency management.

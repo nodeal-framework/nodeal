@@ -1,11 +1,11 @@
 ---
 title: "Decorators"
-description: "Technical reference for all 17 built-in comment-based decorators in Nodeal: syntax, parameters, targets, and compiler behaviors."
+description: "Technical reference for all 18 built-in comment-based decorators in Nodeal: syntax, parameters, targets, and compiler behaviors."
 category: "API Reference"
 order: 4
 ---
 
-The **Decorators Reference** provides technical specifications for all 17 built-in comment-based decorators recognized by Nodeal's background Pre-Parser and runtime engine.
+The **Decorators Reference** provides technical specifications for all 18 built-in comment-based decorators recognized by Nodeal's background Pre-Parser and runtime engine.
 
 Decorators are declared inside standard Luau block comments (`--[=[ ... ]=]`) directly above module or function definitions.
 
@@ -24,6 +24,7 @@ Decorators are declared inside standard Luau block comments (`--[=[ ... ]=]`) di
 | **`@priority`** | Module Header | `math.huge` | Sets execution order priority (lower numbers load first). |
 | **`@param`** | Method | Required | Documents parameter names and descriptions in Studio hover tooltips. |
 | **`@return`** | Method | Optional | Documents return values and types in Studio hover tooltips. |
+| **`@yield`** | Method | Optional | Documents that a method yields and what it waits for. |
 | **`@see`** | Method | Required | Embeds an external documentation URL into the hover tooltip. |
 | **`@example`** | Method | Required | Embeds a syntax-highlighted code sample into the hover tooltip. |
 | **`@alias`** | Method | Required | Registers alternative names for a method in Studio autocomplete. |
@@ -177,6 +178,19 @@ Decorators are declared inside standard Luau block comments (`--[=[ ... ]=]`) di
   ```luau
   --[=[
       @return True if the purchase was authorized; otherwise false.
+  ]=]
+  function ShopService:ProcessOrder(orderId: string): boolean end
+  ```
+</Method>
+
+<Method name="@yield" parameters="description?: string" returns="void" scope="Shared">
+  Documents that a method yields before returning, so callers know it may block the current thread.
+
+  ### Example
+  ```luau
+  --[=[
+      Waits for the marketplace response before resolving.
+      @yield Blocks until the remote call returns.
   ]=]
   function ShopService:ProcessOrder(orderId: string): boolean end
   ```

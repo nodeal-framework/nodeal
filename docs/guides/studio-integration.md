@@ -58,7 +58,7 @@ end
 ```
 
 ### Autocomplete Features Provided by Nodeal
-* **Parameter & Return Documentation**: Parses `@param` and `@return` annotations directly into the hover tooltip.
+* **Parameter, Return & Yield Documentation**: Parses `@param`, `@return` and `@yield` annotations directly into the hover tooltip.
 * **Syntax-Highlighted Examples**: Code blocks tagged with `@example` are formatted with full syntax highlighting.
 * **Deprecation Badges**: Marking a function with `@deprecated` applies a visual strikethrough in autocomplete dropdowns to warn team members.
 * **Dynamic Autocomplete Extensions (`@extend`)**: Functions decorated with `@extend` dynamically add new typed members and child tables to the caller's autocompletion popup as you write code.

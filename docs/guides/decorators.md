@@ -42,7 +42,7 @@ return __(CombatService)
 
 ## Decorators Index
 
-Nodeal includes 17 built-in decorators categorized by architectural purpose:
+Nodeal includes 18 built-in decorators categorized by architectural purpose:
 
 > [!TIP]
 > For exact signatures, parameters, and autocomplete schemas, visit the **[Decorators Technical Reference](../references/decorators)**.
@@ -67,6 +67,7 @@ Nodeal includes 17 built-in decorators categorized by architectural purpose:
 | :--- | :--- | :--- | :--- |
 | **`@param`** | Method | Documents a function parameter in the Studio hover tooltip. | `@param <name: string> [description: string]` |
 | **`@return`** | Method | Documents the return value of a function in the Studio hover tooltip. | `@return [description: string]` |
+| **`@yield`** | Method | Documents that a function yields, e.g. while waiting on a remote call. | `@yield [description: string]` |
 | **`@see`** | Method | Embeds a clickable external documentation URL into the hover tooltip. | `@see <url: string>` |
 | **`@example`** | Method | Embeds a syntax-highlighted code sample directly into the hover tooltip. | `@example <example: string>` |
 | **`@alias`** | Method | Adds alternative alias names to a function in autocomplete. | `@alias <...name: string>` |

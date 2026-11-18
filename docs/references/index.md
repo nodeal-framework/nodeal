@@ -44,7 +44,7 @@ flowchart TD
 | **[Globals](./globals)** | Core Globals | Sandboxed Luau globals (`typeof`, `unpack`, `require`, `newproxy`, `print`, `warn`, `error`, `assert`, `debug`, `_G`, `script`). | [Shared] |
 | **[Game](./game)** | Engine Extensions | Methods injected into the Roblox `game` proxy (`GetModule`, `GetService`, `RegisterService`, `RegisterBuiltIn`, `RegisterDecorator`, `GetNative`). | [Shared] |
 | **[Node](./node)** | Object Model | The virtualized instance wrapper returned by `script`, `game:GetModule()`, and root traversal. | [Shared] |
-| **[Decorators](./decorators)** | Annotations | Complete reference of all 17 built-in comment decorators, signatures, and autocomplete behaviors. | [Shared] |
+| **[Decorators](./decorators)** | Annotations | Complete reference of all 18 built-in comment decorators, signatures, and autocomplete behaviors. | [Shared] |
 | **[DecoratorContext](./decorator-context)** | Metaprogramming | Context object supplied to custom decorator callbacks registered via `game:RegisterDecorator()`. | [Shared] |
 | **[CollectedItem](./collected-item)** | Metaprogramming | Metatable-driven record representing decorated functions captured via the `@collect` pipeline. | [Shared] |
 
@@ -53,7 +53,7 @@ flowchart TD
 | :--- | :--- | :--- |
 | **[Lifecycle](../guides/lifecycle)** | Architecture | Complete execution sequence, topological Kahn sorting, cycle detection, Build vs Init phases. |
 | **[Security](../guides/security)** | Architecture | Passive memory shielding, client instance cleaning, active tamper detection, and production privacy. |
-| **[Decorators](../guides/decorators)** | Modules | Complete reference of all 17 built-in comment-based decorators (`@client`, `@server`, `@build`, `@init`, `@extend`, `@export`, etc.). |
+| **[Decorators](../guides/decorators)** | Modules | Complete reference of all 18 built-in comment-based decorators (`@client`, `@server`, `@build`, `@init`, `@extend`, `@export`, etc.). |
 | **[Built-ins](../guides/builtins)** | Modules | Framework-wide utilities and standard library extensions injected into the global namespace. |
 | **[Packages](../guides/packages)** | Packages | In-Studio package manager, browsing community packages, and publishing to `nodeal.dev/packages`. |
 | **[Configuration](../guides/configuration)** | Architecture | Configuration attributes on `Manifest`, root container tags, and environment variables. |
@@ -117,7 +117,7 @@ Declared in Luau block comments (`--[=[ ... ]=]`) directly above methods or modu
 | :--- | :--- | :--- |
 | **Context & Scoping** | `@server`, `@client`, `@context`, `@hidden` | Control server/client execution rules and autocomplete visibility. |
 | **Lifecycle & Priority** | `@build`, `@init`, `@priority` | Schedule constructor (`Build`) and ignition (`Init`) execution hooks. |
-| **IntelliSense & Tooltips** | `@param`, `@return`, `@see`, `@example`, `@alias`, `@deprecated`, `@overloads` | Power rich Studio hover tooltips, strikethrough warnings, and code samples. |
+| **IntelliSense & Tooltips** | `@param`, `@return`, `@yield`, `@see`, `@example`, `@alias`, `@deprecated`, `@overloads` | Power rich Studio hover tooltips, strikethrough warnings, and code samples. |
 | **Metaprogramming** | `@collect`, `@export`, `@extend` | Aggregate method collections into `.collected` and expand caller completions. |
 
 ---
