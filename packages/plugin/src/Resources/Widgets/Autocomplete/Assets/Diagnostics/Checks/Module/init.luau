@@ -13,7 +13,7 @@
 --// Constants //--
 local Scanner = require(script.Parent.Parent.Scanner)
 
-local Pattern = "(game%s*:%s*GetModule%s*%(%s*[\"'])([^\"']+)"
+local Pattern = Scanner.Patterns.GetModule
 
 local Check = {}
 

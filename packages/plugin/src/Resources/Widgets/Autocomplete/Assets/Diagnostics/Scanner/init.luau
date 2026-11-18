@@ -26,6 +26,26 @@ export type ScanResult = {
 --// Module //--
 local Scanner = {}
 
+-- Tous les motifs Luau du diagnostic vivent ici : les checks et l'orchestrateur ne font que
+-- les consommer. Un seul endroit a corriger si la syntaxe Nodeal change.
+Scanner.Patterns = {
+	GetService = "(game%s*:%s*GetService%s*%(%s*[\"'])([^\"']+)",
+	GetModule = "(game%s*:%s*GetModule%s*%(%s*[\"'])([^\"']+)",
+	Require = "(require%s*%(%s*[\"'])([^\"']+)",
+
+	RegisterService = "game%s*:%s*RegisterService%s*%(%s*[\"']([^\"']+)",
+	RegisterModule = "game%s*:%s*RegisterModule%s*%(%s*[\"']([^\"']+)",
+	RegisterBuiltIn = "game%s*:%s*RegisterBuiltIn%s*%(%s*[\"']([^\"']+)",
+
+	Accessor = "local%s+([%w_]+)%s*=%s*_G%s*%(",
+}
+
+local RegistrationPatterns = {
+	Scanner.Patterns.RegisterService,
+	Scanner.Patterns.RegisterModule,
+	Scanner.Patterns.RegisterBuiltIn,
+}
+
 function Scanner.splitLines(source: string): { string }
 	local lines = {}
 	local index = 1
@@ -173,6 +193,36 @@ function Scanner.forEachCall(line: string, pattern: string, callback: (character
 		callback(startIndex + #prefix, name)
 		cursor = endIndex + 1
 	end
+end
+
+-- Un nom possede par le fichier courant est valide avant meme que l'indexeur ne le voie.
+function Scanner.collectDeclared(code: { string }): { [string]: boolean }
+	local declared = {}
+
+	for _, line in ipairs(code) do
+		for _, pattern in RegistrationPatterns do
+			local name = line:match(pattern)
+
+			if name then
+				declared[name] = true
+			end
+		end
+	end
+
+	return declared
+end
+
+-- Signature du handshake : `local __ = _G()` (ou n'importe quel nom d'accesseur).
+function Scanner.findAccessor(code: { string }): string?
+	for _, line in ipairs(code) do
+		local accessor = line:match(Scanner.Patterns.Accessor)
+
+		if accessor then
+			return accessor
+		end
+	end
+
+	return nil
 end
 
 return Scanner

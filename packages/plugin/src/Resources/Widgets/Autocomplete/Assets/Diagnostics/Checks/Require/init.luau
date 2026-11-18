@@ -13,7 +13,7 @@
 --// Constants //--
 local Scanner = require(script.Parent.Parent.Scanner)
 
-local Pattern = "(require%s*%(%s*[\"'])([^\"']+)"
+local Pattern = Scanner.Patterns.Require
 local Href = "https://create.roblox.com/docs/reference/engine/globals/LuaGlobals#require"
 
 local Check = {}

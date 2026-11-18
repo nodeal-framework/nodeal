@@ -13,7 +13,7 @@
 --// Constants //--
 local Scanner = require(script.Parent.Parent.Scanner)
 
-local Pattern = "(game%s*:%s*GetService%s*%(%s*[\"'])([^\"']+)"
+local Pattern = Scanner.Patterns.GetService
 local Href = "https://create.roblox.com/docs/reference/engine/classes/DataModel#GetService"
 
 -- Un service natif est valide pour toujours ; un nom absent peut encore etre enregistre plus

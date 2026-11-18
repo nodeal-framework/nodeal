@@ -21,42 +21,6 @@ local Scanner = require(script.Scanner)
 local Id = "Nodeal.Diagnostics"
 local Priority = 255
 
--- Un nom possede par le fichier courant est valide avant meme que l'indexeur ne le voie.
-local RegistrationPatterns = {
-	"game%s*:%s*RegisterService%s*%(%s*[\"']([^\"']+)",
-	"game%s*:%s*RegisterModule%s*%(%s*[\"']([^\"']+)",
-	"game%s*:%s*RegisterBuiltIn%s*%(%s*[\"']([^\"']+)",
-}
-
-local function collectDeclared(code: { string }): { [string]: boolean }
-	local declared = {}
-
-	for _, line in ipairs(code) do
-		for _, pattern in RegistrationPatterns do
-			local name = line:match(pattern)
-
-			if name then
-				declared[name] = true
-			end
-		end
-	end
-
-	return declared
-end
-
--- Signature du handshake : `local __ = _G()` (ou n'importe quel nom d'accesseur).
-local function findAccessor(code: { string }): string?
-	for _, line in ipairs(code) do
-		local accessor = line:match("local%s+([%w_]+)%s*=%s*_G%s*%(")
-
-		if accessor then
-			return accessor
-		end
-	end
-
-	return nil
-end
-
 --// Types //--
 type Position = { line: number, character: number }
 
@@ -159,7 +123,7 @@ end
 
 function Diagnostics:analyze(source: string, target: Instance?): { Diagnostic }
 	local scanned = Scanner.scan(source)
-	local accessor = findAccessor(scanned.code)
+	local accessor = Scanner.findAccessor(scanned.code)
 
 	if target then
 		if not target:IsA("ModuleScript") then
@@ -198,7 +162,7 @@ function Diagnostics:analyze(source: string, target: Instance?): { Diagnostic }
 
 		scanned = scanned,
 		accessor = accessor,
-		declared = collectDeclared(scanned.code),
+		declared = Scanner.collectDeclared(scanned.code),
 
 		ready = self.context.isReady(),
 		services = self.context.getServices() or {},
